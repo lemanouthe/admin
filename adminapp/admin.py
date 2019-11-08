@@ -50,6 +50,7 @@ class CategorieAdmin(admin.ModelAdmin):
     ##------ PAGINATION DES DONNÉES ------##
     list_per_page = 3
     
+    ##------- Ordonne les données par nom ------## 
     ordering = ['nom']
     
     ##----- AFFICHAGE DE L'IMAGE LORS DE LA MODOFICATION -------##
@@ -60,19 +61,27 @@ class CategorieAdmin(admin.ModelAdmin):
     
     ##-------- FONCTION POUR ACTIVER LE STATUS --------##
     def active(self, request, queryset):
+        ##------ PERMET DE RENDRE LE STATUS A TRUE ------------##
         queryset.update(status=True)
+        ##------- AFFICHE LE MESSAGE -----------##
         self.message_user(request, 'La sélection a été activé avec succès')
+    ##--------- LE NOM DANS ACTIONS ------------##
     active.short_descriprion = 'Activer les catégories sélectionnés'
     
     ##-------- FONCTION POUR DESACTIVER LE STATUS --------##
     def desactive(self, request, queryset):
+         ##------ PERMET DE RENDRE LE STATUS A FALSE ------------##
         queryset.update(status=False)
+         ##------- AFFICHE LE MESSAGE -----------##
         self.message_user(request, 'La sélection a été désactivé avec succès')
+     ##--------- LE NOM DANS ACTIONS ------------##
     desactive.short_descriprion = 'Désactiver les catégories sélectionnés'
-    
+     
+    ##------- FONCTION POUR L'AFFICHACHE DE L'IMAGE SUR L'ADMIN -----------##
     def view_Image(self, obj):
         return mark_safe('<img src="{img_url}" width="100px" height="100px" />'.format(img_url=obj.image.url))
     
+    ##------- FONCTION POUR L'AFFICHACHE DE L'IMAGE SUR L'ADMIN -----------##
     def detail_Image(self, obj):
         return mark_safe('<img src="{img_url}" width="100px" height="100px" />'.format(img_url=obj.image.url))
 
