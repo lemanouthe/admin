@@ -10,6 +10,10 @@ from django.utils.safestring import mark_safe
 class SousCategorieInline(admin.TabularInline):
     model = models.SousCategrorie
     extra = 0
+    
+class ProduitInline(admin.TabularInline):
+    model = models.Produit
+    extra = 0
 
 ##------- CREATION D'UN MODELE ---------##
 @admin.register(models.Categorie)
@@ -49,7 +53,7 @@ class CategorieAdmin(admin.ModelAdmin):
     ordering = ['nom']
     
     ##----- AFFICHAGE DE L'IMAGE LORS DE LA MODOFICATION -------##
-    readonly_fileds =['detail_Image']
+    readonly_fields =['detail_Image']
     
     ##---- Les actions --------##
     actions = ('active', 'desactive')
@@ -95,6 +99,9 @@ class SousCategorieAdmin(admin.ModelAdmin):
         'categorie_id',
         'nom',
     )
+    
+    inlines = [ProduitInline]
+
         
     ##------ Affichage des données par mois sélon le jour -----##
     date_hierarchy = ('date_add')
@@ -106,7 +113,9 @@ class SousCategorieAdmin(admin.ModelAdmin):
     list_per_page = 3
         
     ordering = ['nom']
-        
+    
+    readonly_fields =['detImage']
+
     ##---- Les actions --------##
     actions = ('active', 'desactive')
         
@@ -124,3 +133,104 @@ class SousCategorieAdmin(admin.ModelAdmin):
         
     def Image(self, obj):
         return mark_safe('<img src="{url}" width="100px" height="100px" />'.format(url=obj.image.url))
+    
+    def detImage(self, obj):
+        return mark_safe('<img src="{url}" width="100px" height="100px" />'.format(url=obj.image.url))
+
+@admin.register(models.Produit)
+class ProduitAdmin(admin.ModelAdmin):
+    list_display = (
+        'souscategorie',
+        'titre',
+        'date_add',
+        'date_upd',
+        'status',
+        'produit_Image',
+    )
+    list_filter = (
+        'status',
+        'date_add',
+        'date_upd',
+        'souscategorie',
+    )
+    ##---- Champs de recherche ----##
+    search_fields = (
+        'souscategorie',
+        'tague',
+        'nom',
+    )
+    fieldsets = [
+        ('Titre et Visibilité', {'fields': ['titre', 'status']}),
+        ('Description et Image', {'fields': ['description', 'image']}),
+        ('Tague et Souscategorie', {'fields': ['tague', 'souscategorie']}),
+    ]
+    
+    filter_horizontal = ('tague',)
+    
+    actions = ('active', 'desactive')
+    
+    list_per_page = 3
+        
+    ordering = ['titre']
+    
+    list_display_links = ('produit_Image', 'titre',)
+    
+    date_hierarchy = ('date_add')
+    
+    readonly_fields =['proImage']
+
+
+        
+    ##-------- FONCTION POUR ACTIVER LE STATUS --------##
+    def active(self, request, queryset):
+        queryset.update(status=True)
+        self.message_user(request, 'La sélection a été activé avec succès')
+    active.short_descriprion = 'Activer les produits sélectionnés'
+        
+    ##-------- FONCTION POUR DESACTIVER LE STATUS --------##
+    def desactive(self, request, queryset):
+        queryset.update(status=False)
+        self.message_user(request, 'La sélection a été désactivé avec succès')
+    desactive.short_descriprion = 'Désactiver les produits sélectionnés'
+    
+    def produit_Image(self, obj):
+        return mark_safe('<img src="{url}" width="100px" height="100px" />'.format(url=obj.image.url))
+    
+    def proImage(self, obj):
+        return mark_safe('<img src="{url}" width="100px" height="100px" />'.format(url=obj.image.url))
+    
+@admin.register(models.Tague)
+class TagueAdmin(admin.ModelAdmin):
+    list_display = (
+        'nom',
+        'status',
+        'date_add',
+        'date_upd',
+    )
+    list_filter = (
+        'status',
+        'date_add',
+        'date_upd',
+    )
+    search_fields = (
+        'nom',
+    )
+    actions = ('active', 'desactive')
+    list_per_page = 3
+            
+    ordering = ['nom']
+        
+    list_display_links = ('nom',)
+        
+    date_hierarchy = ('date_add')
+    
+    def active(self, request, queryset):
+        queryset.update(status=True)
+        self.message_user(request, 'La sélection a été activé avec succès')
+    active.short_descriprion = 'Activer les tagues sélectionnés'
+            
+    ##-------- FONCTION POUR DESACTIVER LE STATUS --------##
+    def desactive(self, request, queryset):
+        queryset.update(status=False)
+        self.message_user(request, 'La sélection a été désactivé avec succès')
+    desactive.short_descriprion = 'Désactiver les tagues sélectionnés'
