@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'flags/sprite.css' %}">
+
+</head>
+<body>
+    <i class="{{ country.flag_css }}"></i>
+    <form action="">
+        {% csrf_token %}
+        {{ forms.as_p }}
+    </form>
+
+    {% load countries %}
+    {% get_countries as countries %}
+    <select>
+    {% for country in countries %}
+        <option value="{{ country.code }}">{{ country.flags }}</option>
+    {% endfor %}
+    </select>
+    <img class="country-select-flag" id="{flag_id}" style="margin: 6px 4px 0" src="{country.flag}">
+</body>
+</html>

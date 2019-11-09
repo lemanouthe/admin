@@ -3,6 +3,10 @@ from django.contrib import admin
 from . import models
 ##--------- IMPORTATION DE MARK SAFE POUR L'AFFICHAGE D'UNE IMAGE SUR LA PARTIE ADMIN --------##
 from django.utils.safestring import mark_safe
+from django_better_admin_arrayfield.admin.mixins import DynamicArrayMixin
+from django_better_admin_arrayfield.models.fields import ArrayField
+from django.contrib.postgres import fields
+from django_json_widget.widgets import JSONEditorWidget
 # Register your models here.
 
 ## register inline ##
@@ -147,10 +151,13 @@ class SousCategorieAdmin(admin.ModelAdmin):
         return mark_safe('<img src="{url}" width="100px" height="100px" />'.format(url=obj.image.url))
 
 @admin.register(models.Produit)
-class ProduitAdmin(admin.ModelAdmin):
+class ProduitAdmin(admin.ModelAdmin, DynamicArrayMixin):
     list_display = (
         'souscategorie',
         'titre',
+        'taille',
+        'family',
+        'prix',
         'date_add',
         'date_upd',
         'status',
@@ -171,8 +178,12 @@ class ProduitAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Titre et Visibilité', {'fields': ['titre', 'status']}),
         ('Description et Image', {'fields': ['description', 'image']}),
-        ('Tague et Souscategorie', {'fields': ['tague', 'souscategorie']}),
+        ('Tague et Souscategorie', {'fields': ['tague', 'souscategorie', 'taille', 'family', 'prix']}),
     ]
+    
+    formfield_overrides = {
+        fields.JSONField: {'widget': JSONEditorWidget},
+    }
     
     filter_horizontal = ('tague',)
     
@@ -243,3 +254,80 @@ class TagueAdmin(admin.ModelAdmin):
         queryset.update(status=False)
         self.message_user(request, 'La sélection a été désactivé avec succès')
     desactive.short_descriprion = 'Désactiver les tagues sélectionnés'
+@admin.register(models.Person)
+class PersonAdmin(admin.ModelAdmin):
+    
+    list_display = (
+        'name',
+        'country',
+    )
+    list_filter = (
+        'country',
+    )
+    ##---- Champs de recherche ----##
+    search_fields = (
+        'country',
+    )
+        
+    ##------ Affichage des données par mois sélon le jour -----##
+    
+    ##------- Les champs cliquables --------##
+    list_display_links = ('name',)
+        
+    ##------ PAGINATION DES DONNÉES ------##
+    list_per_page = 3
+        
+    ordering = ['name']
+
+    ##---- Les actions --------##
+    actions = ('active', 'desactive')
+        
+    ##-------- FONCTION POUR ACTIVER LE STATUS --------##
+    def active(self, request, queryset):
+        queryset.update(status=True)
+        self.message_user(request, 'La sélection a été activé avec succès')
+    active.short_descriprion = 'Activer les souscatégories sélectionnés'
+        
+    ##-------- FONCTION POUR DESACTIVER LE STATUS --------##
+    def desactive(self, request, queryset):
+        queryset.update(status=False)
+        self.message_user(request, 'La sélection a été désactivé avec succès')
+    desactive.short_descriprion = 'Désactiver les souscatégories sélectionnés'
+    
+@admin.register(models.Incident)
+class Incidentadmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'countries',
+    )
+    list_filter = (
+        'countries',
+    )
+    ##---- Champs de recherche ----##
+    search_fields = (
+        'countries',
+    )
+        
+    ##------ Affichage des données par mois sélon le jour -----##
+    
+    ##------- Les champs cliquables --------##
+    list_display_links = ('title',)
+        
+    ##------ PAGINATION DES DONNÉES ------##
+    list_per_page = 3
+        
+    ordering = ['title']
+
+    ##---- Les actions --------##
+    actions = ('active', 'desactive')
+        
+    ##-------- FONCTION POUR ACTIVER LE STATUS --------##
+    def active(self, request, queryset):
+        queryset.update(status=True)
+        self.message_user(request, 'La sélection a été activé avec succès')
+    active.short_descriprion = 'Activer les souscatégories sélectionnés'
+    
+    def desactive(self, request, queryset):
+        queryset.update(status=False)
+        self.message_user(request, 'La sélection a été désactivé avec succès')
+    desactive.short_descriprion = 'Désactiver les souscatégories sélectionnés'

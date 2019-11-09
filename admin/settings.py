@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'admin_interface',
     'colorfield',
+    'django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig',
+    'django_json_widget',
+    'django_countries',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'adminapp.apps.AdminappConfig'
-    'django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig',
-    'django_json_widget',
+    
 ]
 
 MIDDLEWARE = [
