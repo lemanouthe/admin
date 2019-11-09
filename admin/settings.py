@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'adminapp.apps.AdminappConfig'
+    'django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig',
+    'django_json_widget',
 ]
 
 MIDDLEWARE = [
