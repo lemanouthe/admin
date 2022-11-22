@@ -7,6 +7,6 @@ django-countries==5.5
 django-filer==1.6.0
 django-js-asset==1.2.2
 django-json-widget==0.2.0
-Pillow==6.2.1
+Pillow==9.3.0
 psycopg2-binary==2.8.4
 
